@@ -3,17 +3,51 @@
 <head>
     <meta charset="UTF-8">
     <title>Closet App</title>
-    <style>
-        body { font-family: Arial; padding: 20px; }
 
+    <style>
+
+        /* ===== 全体テーマ（黒 × ピンク × 紫） ===== */
+        body {
+            font-family: Arial;
+            padding: 20px;
+            background: linear-gradient(135deg, #1a0b1f, #000);
+            color: #f4dfff;
+        }
+
+        h2 {
+            color: #ff85e7;
+            text-shadow: 0 0 6px #d57bff;
+        }
+
+        select {
+            background: #1b1b1b;
+            color: #ffbdf8;
+            border: 1px solid #ff6ad5;
+            padding: 5px;
+            border-radius: 8px;
+        }
+
+        button {
+            background: linear-gradient(135deg, #d57bff, #ff6ad5);
+            color: white;
+            border: none;
+            padding: 10px 16px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+
+        /* ===== アイテムカード ===== */
         .item { 
             display: flex; 
             align-items: center; 
             gap: 15px; 
             margin-bottom: 15px;
-            border: 1px solid #ccc;
-            padding: 10px;
-            border-radius: 10px;
+            background: #1a1a1a;
+            border: 1px solid #444;
+            padding: 12px;
+            border-radius: 12px;
         }
 
         img { 
@@ -23,7 +57,8 @@
             border-radius: 8px; 
         }
 
-        /* 💜光るグラデ削除ボタン */
+
+        /* ===== 紫→ピンクの光る削除ボタン ===== */
         .delete-btn {
             background: linear-gradient(135deg, #d57bff, #ff6ad5);
             color: white;
@@ -39,14 +74,61 @@
         .delete-btn:hover {
             opacity: 0.85;
         }
+
+
+        /* ===== クローゼットアニメ ===== */
+        #closet {
+            position: relative;
+            width: 280px;
+            height: 180px;
+            margin: 20px auto;
+            background: #222;
+            border: 3px solid #444;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        #door-left, #door-right {
+            position: absolute;
+            width: 50%;
+            height: 100%;
+            top: 0;
+            background: linear-gradient(135deg, #2b2b2b, #1a1a1a);
+            transition: transform 0.8s ease;
+        }
+
+        #door-left {
+            left: 0;
+            border-right: 2px solid #555;
+        }
+
+        #door-right {
+            right: 0;
+            border-left: 2px solid #555;
+        }
+
+        #closet.open #door-left {
+            transform: translateX(-100%);
+        }
+
+        #closet.open #door-right {
+            transform: translateX(100%);
+        }
+
     </style>
 </head>
 <body>
-    <div id="closet">
+
+
+<!-- ===== クローゼットアニメーション部 ===== -->
+<h2>クローゼットをタップして開けてね</h2>
+<div id="closet">
     <div id="door-left"></div>
     <div id="door-right"></div>
 </div>
 
+
+<!-- ===== 洋服追加フォーム ===== -->
 <h2>洋服を追加</h2>
 
 <input type="file" id="imageInput" accept="image/*"><br><br>
@@ -71,8 +153,11 @@
 
 <button onclick="addItem()">追加</button>
 
-<h2>クローゼット</h2>
+
+<!-- ===== クローゼット中身 ===== -->
+<h2>クローゼットの中</h2>
 <div id="list"></div>
+
 
 <script src="script.js"></script>
 </body>
