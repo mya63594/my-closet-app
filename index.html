@@ -1,137 +1,133 @@
 <!DOCTYPE html>
-<html>
+<html lang="ja">
 <head>
-    <meta charset="UTF-8">
-    <title>Closet App</title>
+<meta charset="UTF-8">
+<title>My Closet App</title>
 
-    <style>
+<style>
+/* ====== 全体デザイン（黒×ピンク×紫） ====== */
+body {
+    font-family: Arial;
+    background: linear-gradient(135deg, #120018, #000);
+    color: #ffd8ff;
+    padding: 20px;
+}
 
-        /* ===== 全体テーマ（黒 × ピンク × 紫） ===== */
-        body {
-            font-family: Arial;
-            padding: 20px;
-            background: linear-gradient(135deg, #1a0b1f, #000);
-            color: #f4dfff;
-        }
+/* 見出し */
+h1, h2, h3 {
+    text-align: center;
+    color: #ffbdf8;
+}
 
-        h2 {
-            color: #ff85e7;
-            text-shadow: 0 0 6px #d57bff;
-        }
+/* ====== 服追加フォーム ====== */
+form, .input-box {
+    margin-bottom: 20px;
+}
 
-        select {
-            background: #1b1b1b;
-            color: #ffbdf8;
-            border: 1px solid #ff6ad5;
-            padding: 5px;
-            border-radius: 8px;
-        }
+select, input {
+    width: 100%;
+    padding: 10px;
+    background: #1d1d1d;
+    color: #ffbdf8;
+    border: 1px solid #ff6ad5;
+    border-radius: 10px;
+    margin-top: 10px;
+}
 
-        button {
-            background: linear-gradient(135deg, #d57bff, #ff6ad5);
-            color: white;
-            border: none;
-            padding: 10px 16px;
-            border-radius: 12px;
-            cursor: pointer;
-            font-weight: bold;
-        }
+button {
+    width: 100%;
+    margin-top: 10px;
+    padding: 12px;
+    border-radius: 12px;
+    border: none;
+    cursor: pointer;
+    font-weight: bold;
+    background: linear-gradient(135deg, #d57bff, #ff6ad5);
+    color: white;
+}
 
+/* ====== 登録した服一覧 ====== */
+.item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #1b1b1b;
+    padding: 10px;
+    border-radius: 12px;
+    margin-bottom: 10px;
+    border: 1px solid #333;
+}
+.item img {
+    width: 80px;
+    height: 80px;
+    object-fit: cover;
+    border-radius: 8px;
+}
+.delete-btn {
+    background: #ff6ad5;
+    border: none;
+    padding: 8px;
+    border-radius: 8px;
+    cursor: pointer;
+    color: #fff;
+    font-weight: bold;
+}
 
-        /* ===== アイテムカード ===== */
-        .item { 
-            display: flex; 
-            align-items: center; 
-            gap: 15px; 
-            margin-bottom: 15px;
-            background: #1a1a1a;
-            border: 1px solid #444;
-            padding: 12px;
-            border-radius: 12px;
-        }
+/* ====== コーデ表示 ====== */
+#coordinate-area {
+    width: 90%;
+    margin: auto;
+    padding: 20px;
+    text-align: center;
+    border-radius: 15px;
+    background: #1a1a1a;
+    margin-bottom: 30px;
+    border: 1px solid #444;
+}
+#coordinate-area img {
+    width: 160px;
+    border-radius: 10px;
+    margin: 5px;
+}
 
-        img { 
-            width: 80px; 
-            height: 80px; 
-            object-fit: cover; 
-            border-radius: 8px; 
-        }
+/* ====== 円形スライドクローゼット ====== */
+.carousel {
+    display: flex;
+    overflow-x: scroll;
+    scroll-snap-type: x mandatory;
+    gap: 20px;
+    padding: 15px;
+    border-radius: 14px;
+    background: #121212;
+    border: 1px solid #444;
+    white-space: nowrap;
+    margin-bottom: 30px;
+}
+.carousel::-webkit-scrollbar {
+    display: none;
+}
+.carousel img {
+    width: 120px;
+    height: 120px;
+    object-fit: cover;
+    scroll-snap-align: center;
+    border-radius: 12px;
+    border: 2px solid #ff87e8;
+    cursor: pointer;
+}
 
-
-        /* ===== 紫→ピンクの光る削除ボタン ===== */
-        .delete-btn {
-            background: linear-gradient(135deg, #d57bff, #ff6ad5);
-            color: white;
-            border: none;
-            padding: 10px 14px;
-            border-radius: 12px;
-            font-size: 18px;
-            font-weight: bold;
-            cursor: pointer;
-            box-shadow: 0 0 10px #ff6ad5;
-        }
-
-        .delete-btn:hover {
-            opacity: 0.85;
-        }
-
-
-        /* ===== クローゼットアニメ ===== */
-        #closet {
-            position: relative;
-            width: 280px;
-            height: 180px;
-            margin: 20px auto;
-            background: #222;
-            border: 3px solid #444;
-            border-radius: 10px;
-            overflow: hidden;
-        }
-
-        #door-left, #door-right {
-            position: absolute;
-            width: 50%;
-            height: 100%;
-            top: 0;
-            background: linear-gradient(135deg, #2b2b2b, #1a1a1a);
-            transition: transform 0.8s ease;
-        }
-
-        #door-left {
-            left: 0;
-            border-right: 2px solid #555;
-        }
-
-        #door-right {
-            right: 0;
-            border-left: 2px solid #555;
-        }
-
-        #closet.open #door-left {
-            transform: translateX(-100%);
-        }
-
-        #closet.open #door-right {
-            transform: translateX(100%);
-        }
-
-    </style>
+</style>
 </head>
+
 <body>
+<h1>My Closet</h1>
 
-
-<!-- ===== クローゼットアニメーション部 ===== -->
-<h2>クローゼットをタップして開けてね</h2>
-<div id="closet">
-    <div id="door-left"></div>
-    <div id="door-right"></div>
-</div>
-
-
-<!-- ===== 洋服追加フォーム ===== -->
+<!-- ===============================
+   洋服追加エリア
+================================ -->
 <h2>洋服を追加</h2>
 
-<input type="file" id="imageInput" accept="image/*"><br><br>
+<input type="file" id="imageInput">
 
 <select id="category">
     <option>仕事</option>
@@ -141,23 +137,37 @@
 </select>
 
 <select id="season">
-    <option>夏</option>
-    <option>冬</option>
+    <option>夏服</option>
+    <option>冬服</option>
 </select>
 
 <select id="material">
     <option>レース</option>
     <option>ベロア</option>
     <option>コットン</option>
+    <option>その他</option>
 </select>
 
-<button onclick="addItem()">追加</button>
+<button onclick="addItem()">追加する</button>
 
-
-<!-- ===== クローゼット中身 ===== -->
-<h2>クローゼットの中</h2>
 <div id="list"></div>
 
+
+<!-- ===============================
+   コーディネートエリア
+================================ -->
+<h2>コーデを作る</h2>
+
+<div id="coordinate-area">
+    <div id="selected-top">トップスを選んでね</div>
+    <div id="selected-bottom">ボトムスを選んでね</div>
+</div>
+
+<h3>トップスを選ぶ</h3>
+<div id="top-carousel" class="carousel"></div>
+
+<h3>ボトムスを選ぶ</h3>
+<div id="bottom-carousel" class="carousel"></div>
 
 <script src="script.js"></script>
 </body>
