@@ -20,10 +20,10 @@ function addItem() {
         item.innerHTML = `
             <img src="${imgSrc}">
             <div>${category} / ${season} / ${material}</div>
-            <button class="delete-btn">❌</button>
+            <button class="delete-btn">🗑️</button>
         `;
 
-        // 削除ボタンの処理
+        // 💜削除ボタン → アイテムを消す
         item.querySelector(".delete-btn").addEventListener("click", () => {
             item.remove();
         });
