@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Closet App</title>
+    <link rel="stylesheet" href="style.css">
+
+    <!-- PWA 対応 -->
+    <link rel="manifest" href="manifest.json">
+</head>
+<body>
+
+    <div id="closet">
+        <div class="door left"></div>
+        <div class="door right"></div>
+        <h1 class="title">My Closet</h1>
+
+        <button id="addButton">＋ 服を追加</button>
+
+        <div id="items"></div>
+    </div>
+
+    <!-- 追加フォーム -->
+    <div id="addForm" class="hidden">
+        <h2>服を登録</h2>
+
+        <label>カテゴリー</label>
+        <select id="scene">
+            <option>仕事</option>
+            <option>遊び</option>
+            <option>バレー</option>
+            <option>夜食</option>
+        </select>
+
+        <label>季節</label>
+        <select id="season">
+            <option>夏</option>
+            <option>冬</option>
+        </select>
+
+        <label>素材</label>
+        <input id="material" placeholder="レース / ベロア など">
+
+        <label>写真</label>
+        <input type="file" id="photo" accept="image/*" capture="environment">
+
+        <button id="saveButton">保存</button>
+        <button id="cancelButton">キャンセル</button>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
