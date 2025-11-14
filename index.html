@@ -3,10 +3,9 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>My Closet App</title>
+<title>My Closet — 円形クローゼット</title>
 
 <style>
-/* ===== 全体テーマ（黒 × ピンク × 紫） ===== */
 :root{
   --bg1:#090007;
   --bg2:#120018;
@@ -16,137 +15,120 @@
   --card:#151216;
 }
 
+/* base */
 *{box-sizing:border-box}
 body{
   margin:0;
-  font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial;
+  font-family: -apple-system,system-ui,"Segoe UI",Roboto,"Helvetica Neue",Arial;
+  -webkit-font-smoothing:antialiased;
   background: linear-gradient(135deg,var(--bg1),var(--bg2));
   color: #ffe8ff;
-  -webkit-font-smoothing:antialiased;
   padding:18px;
 }
-
-/* header */
-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
-h1{margin:0;font-size:20px;color:var(--accent-pink);text-shadow:0 4px 18px rgba(0,0,0,.6)}
-
-/* layout */
-.container{max-width:760px;margin:0 auto;}
-.col{display:flex;gap:18px;flex-wrap:wrap}
+.container{max-width:980px;margin:0 auto}
+header{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
+h1{margin:0;font-size:20px;color:var(--accent-pink)}
 
 /* form */
 .form-card{
-  background:linear-gradient(180deg,#0b0810,#0f0a15);
-  border-radius:12px;padding:12px;border:1px solid rgba(255,105,200,0.06);
-  width:100%;
+  background: linear-gradient(180deg,#0b0810,#0f0a15);
+  padding:12px;border-radius:12px;border:1px solid rgba(255,105,200,0.06);
+  margin-bottom:16px;
 }
-.row{display:flex;gap:12px}
-.input{flex:1}
-label{font-size:13px;color:var(--muted);display:block;margin-bottom:6px}
-select,input[type=file],input[type=text]{width:100%;padding:10px;border-radius:10px;border:1px solid #2a2133;background:#0c0a0e;color:var(--muted)}
-.btn{
+.form-row{display:flex;gap:10px;flex-wrap:wrap}
+.form-col{flex:1;min-width:140px}
+label{display:block;font-size:13px;color:var(--muted);margin-bottom:6px}
+input[type=file],select,input[type=text],button{
+  width:100%;padding:10px;border-radius:10px;border:1px solid #2a2133;background:#0c0a0e;color:var(--muted);
+}
+button.btn{
   background:linear-gradient(90deg,var(--accent-purple),var(--accent-pink));
-  color:#0a0610;border:none;padding:10px 14px;border-radius:10px;font-weight:700;cursor:pointer;
+  color:#0a0610;border:none;padding:10px;border-radius:10px;font-weight:700;cursor:pointer;
 }
 
-/* closet (glass doors) */
-.closet-wrap{margin:20px auto;max-width:720px}
+/* closet wrapper */
+.closet-wrap{max-width:760px;margin:14px auto}
 #closet{
-  position:relative;
-  height:240px;
-  border-radius:14px;
-  overflow:hidden;
-  background:linear-gradient(180deg,rgba(255,255,255,0.03),rgba(0,0,0,0));
-  border:1px solid rgba(255,255,255,0.04);
-  box-shadow: 0 12px 40px rgba(6,0,12,0.6);
+  position:relative;height:460px;border-radius:16px;overflow:hidden;
+  background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(0,0,0,0.02));
+  border:1px solid rgba(255,255,255,0.03);
+  box-shadow:0 18px 60px rgba(6,0,12,0.6);
 }
 
-/* interior (appears when doors open) */
+/* interior - appears when open */
 .closet-interior{
-  position:absolute;inset:0;padding:18px;display:flex;flex-direction:column;gap:12px;align-items:center;
-  justify-content:flex-start;opacity:0;transform:translateY(6px);transition:opacity .6s ease, transform .6s ease;
+  position:absolute;inset:0;padding:18px;display:flex;flex-direction:column;gap:12px;
+  opacity:0;transform:translateY(8px);transition:opacity .6s ease, transform .6s ease;
 }
+#closet.open .closet-interior{opacity:1;transform:translateY(0)}
 
-/* when open, interior becomes visible */
-#closet.open .closet-interior{opacity:1;transform:translateY(0);}
-
-/* glass doors (semi-transparent glass look) */
+/* glass doors (frosted) */
 .door{
   position:absolute;top:0;height:100%;width:50%;
-  background:linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01));
-  border-radius:0;
-  backdrop-filter: blur(6px) saturate(140%);
-  -webkit-backdrop-filter: blur(6px) saturate(140%);
-  border:1px solid rgba(255,255,255,0.06);
-  transition:transform .9s cubic-bezier(.2,.9,.2,1), box-shadow .6s;
+  background: rgba(255,255,255,0.12);
+  backdrop-filter: blur(14px) saturate(130%);
+  -webkit-backdrop-filter: blur(14px) saturate(130%);
+  border:1px solid rgba(255,255,255,0.12);
+  transition: transform 2.2s cubic-bezier(.2,.9,.2,1), box-shadow .6s;
   z-index:6;
-  box-shadow: inset 0 -40px 60px rgba(0,0,0,0.5);
+  box-shadow: inset 0 -30px 60px rgba(0,0,0,0.45);
 }
-
-/* decorative tint for doors */
-#door-left{
-  left:0;
-  background: linear-gradient(180deg, rgba(200,140,255,0.04), rgba(80,30,80,0.02));
-  transform-origin:left center;
-}
-#door-right{
-  right:0;
-  background: linear-gradient(180deg, rgba(255,90,170,0.04), rgba(80,30,80,0.02));
-  transform-origin:right center;
-}
-
-/* door open transforms (slide outward) */
+#door-left{left:0;transform-origin:left center}
+#door-right{right:0;transform-origin:right center}
 #closet.open #door-left{ transform: translateX(-105%); }
 #closet.open #door-right{ transform: translateX(105%); }
 
-/* door handles */
+/* handles */
 .door-handle{
-  position:absolute;top:50%;transform:translateY(-50%);width:8px;height:44px;border-radius:6px;background:linear-gradient(90deg,var(--accent-pink),var(--accent-purple));opacity:0.95;
-  box-shadow:0 6px 18px rgba(213,123,255,0.18);
-  z-index:10;
+  position:absolute;top:50%;transform:translateY(-50%);width:8px;height:44px;border-radius:6px;
+  background:linear-gradient(90deg,var(--accent-pink),var(--accent-purple));
+  box-shadow:0 6px 16px rgba(213,123,255,0.18);z-index:10;opacity:.95;
 }
 .door-handle.left{left:44%}
 .door-handle.right{right:44%}
 
-/* closet rail + hanging area */
-.rail{
-  width:100%;height:8px;border-radius:6px;background:linear-gradient(90deg,rgba(255,255,255,0.06),rgba(255,255,255,0.02));
-  margin-bottom:8px;align-self:stretch;
+/* rail containers (two stacked circular rails) */
+.rail-wrap{display:flex;flex-direction:column;gap:18px;align-items:center;justify-content:center}
+
+/* circular rail box */
+.circle-stage{
+  position:relative;
+  width:360px;height:160px;border-radius:14px;
+  background:linear-gradient(180deg, rgba(255,255,255,0.01), rgba(0,0,0,0.02));
+  border:1px solid rgba(255,255,255,0.02);
+  display:flex;align-items:center;justify-content:center;
+  overflow:visible;
 }
 
-/* carousel style (circular-feel by styling) */
-.carousel{
-  width:100%;
-  display:flex;
-  gap:12px;
-  overflow:auto;
-  padding:8px 6px;
-  scroll-snap-type:x mandatory;
+/* the rotating ring that we rotate with drag gesture */
+.ring{
+  position:absolute;left:50%;top:50%;transform:translate(-50%,-50%) rotate(0deg);width:320px;height:320px;
+  border-radius:50%;pointer-events:auto;
 }
-.carousel::-webkit-scrollbar{display:none}
-.carousel-item{
-  flex:0 0 auto;
-  width:104px;height:140px;border-radius:12px;background:#0e0b10;border:1px solid rgba(255,255,255,0.03);padding:8px;
-  display:flex;flex-direction:column;align-items:center;gap:8px;scroll-snap-align:center;cursor:pointer;
-  transition:transform .18s ease, box-shadow .18s;
-}
-.carousel-item img{width:88px;height:100px;object-fit:cover;border-radius:8px;border:2px solid rgba(200,140,255,0.12);}
 
-.carousel-item:hover{transform:translateY(-6px);box-shadow:0 10px 30px rgba(160,80,200,0.15)}
+/* hanger item around ring */
+.ring-item{
+  position:absolute;left:50%;top:50%;transform-origin:0px 0px;
+  width:88px;height:110px;margin:-55px 0 0 -44px;display:flex;flex-direction:column;align-items:center;gap:6px;cursor:pointer;
+  transition:transform .15s ease;
+}
+.ring-item img{width:80px;height:90px;object-fit:cover;border-radius:8px;border:2px solid rgba(200,140,255,0.12);box-shadow:0 8px 20px rgba(0,0,0,0.45)}
+.ring-item:hover{transform:translateY(-8px) scale(1.04)}
+
+/* small caption under item */
+.ring-item .cap{font-size:12px;color:var(--muted);margin-top:4px;text-align:center}
 
 /* selected display */
-.selected-area{display:flex;gap:12px;align-items:center;justify-content:center;margin-top:6px}
-.selected-area img{width:150px;height:150px;object-fit:cover;border-radius:12px;border:3px solid rgba(255,255,255,0.04);}
+.selected-area{display:flex;gap:14px;align-items:center;justify-content:center;margin-top:2px}
+.selected-area img{width:150px;height:150px;object-fit:cover;border-radius:12px;border:3px solid rgba(255,255,255,0.04)}
 
-/* list area */
-#list{margin-top:12px;display:flex;flex-direction:column;gap:8px}
+/* list of items (for management) */
+#list{margin-top:12px;display:flex;flex-direction:column;gap:8px;padding:6px}
 
-/* small responsive */
-@media (min-width:880px){
-  .container{max-width:880px}
-  .carousel-item{width:120px;height:160px}
-  .carousel-item img{width:104px;height:120px}
-  .selected-area img{width:180px;height:180px}
+/* responsive */
+@media (min-width:920px){
+  .circle-stage{width:540px;height:220px}
+  .ring{width:480px;height:480px}
 }
 </style>
 </head>
@@ -154,18 +136,18 @@ select,input[type=file],input[type=text]{width:100%;padding:10px;border-radius:1
 <div class="container">
   <header>
     <h1>My Closet</h1>
-    <div style="font-size:13px;color:var(--muted)">黒 × ピンク × 紫 テーマ</div>
+    <div style="font-size:13px;color:var(--muted)">黒 × ピンク × 紫</div>
   </header>
 
-  <!-- フォーム -->
+  <!-- form -->
   <section class="form-card">
-    <div style="display:flex;gap:12px;flex-wrap:wrap">
-      <div style="flex:1;min-width:160px">
+    <div class="form-row">
+      <div class="form-col">
         <label>写真</label>
-        <input type="file" id="imageInput" accept="image/*" />
+        <input type="file" id="imageInput" accept="image/*">
       </div>
 
-      <div style="flex:1;min-width:140px">
+      <div class="form-col">
         <label>カテゴリ</label>
         <select id="category">
           <option>仕事</option>
@@ -175,7 +157,7 @@ select,input[type=file],input[type=text]{width:100%;padding:10px;border-radius:1
         </select>
       </div>
 
-      <div style="flex:1;min-width:140px">
+      <div class="form-col">
         <label>季節</label>
         <select id="season">
           <option>夏服</option>
@@ -183,7 +165,7 @@ select,input[type=file],input[type=text]{width:100%;padding:10px;border-radius:1
         </select>
       </div>
 
-      <div style="flex:1;min-width:140px">
+      <div class="form-col">
         <label>素材</label>
         <select id="material">
           <option>レース</option>
@@ -193,51 +175,54 @@ select,input[type=file],input[type=text]{width:100%;padding:10px;border-radius:1
         </select>
       </div>
 
-      <div style="flex:1;min-width:120px;align-self:flex-end">
-        <button id="addBtn" class="btn">追加する</button>
+      <div class="form-col" style="min-width:120px;align-self:flex-end">
+        <label>種類</label>
+        <select id="kind">
+          <option value="infer">自動判定（仕事/遊び→トップス, それ以外→ボトムス）</option>
+          <option value="top">トップス</option>
+          <option value="bottom">ボトムス</option>
+        </select>
+        <button id="addBtn" class="btn" style="margin-top:8px">追加する</button>
       </div>
     </div>
   </section>
 
-  <!-- クローゼット -->
+  <!-- closet -->
   <div class="closet-wrap">
     <div id="closet">
       <div class="closet-interior">
-        <div class="rail"></div>
-
-        <!-- Selected / coordinate area (center) -->
-        <div id="coordinate-area">
-          <div id="selected-top">トップスを選んでください</div>
-          <div id="selected-bottom">ボトムスを選んでください</div>
-        </div>
-
-        <!-- circular carousels -->
-        <div style="width:100%;display:flex;gap:12px;flex-direction:column;align-items:stretch">
-          <div>
-            <h3 style="margin:6px 0;color:var(--accent-pink);text-align:left">トップス</h3>
-            <div id="top-carousel" class="carousel" aria-label="tops"></div>
+        <!-- rail top (top row) -->
+        <div class="rail-wrap" style="margin-top:6px">
+          <div class="circle-stage" aria-hidden="true">
+            <!-- top ring (smaller radius) -->
+            <div id="top-ring" class="ring" data-rotation="0"></div>
           </div>
 
-          <div>
-            <h3 style="margin:6px 0;color:var(--accent-purple);text-align:left">ボトムス</h3>
-            <div id="bottom-carousel" class="carousel" aria-label="bottoms"></div>
+          <!-- preview selected -->
+          <div class="selected-area" style="margin-top:6px">
+            <div id="selected-top">トップス: まだ選ばれていません</div>
+            <div id="selected-bottom">ボトムス: まだ選ばれていません</div>
+          </div>
+
+          <!-- bottom ring -->
+          <div class="circle-stage" style="margin-top:6px" aria-hidden="true">
+            <div id="bottom-ring" class="ring" data-rotation="0"></div>
           </div>
         </div>
 
-        <!-- list (hidden inside closet bottom) -->
-        <div id="list" style="width:100%"></div>
+        <!-- management list -->
+        <div id="list"></div>
+
       </div>
 
-      <!-- semi-transparent glass doors -->
+      <!-- doors -->
       <div id="door-left" class="door"></div>
       <div id="door-right" class="door"></div>
 
-      <!-- handles -->
       <div class="door-handle left" aria-hidden="true"></div>
       <div class="door-handle right" aria-hidden="true"></div>
     </div>
   </div>
-
 </div>
 
 <script src="script.js"></script>
