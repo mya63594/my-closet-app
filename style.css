@@ -1,0 +1,79 @@
+body {
+    margin: 0;
+    background: #000;
+    font-family: Arial, sans-serif;
+    color: #fff;
+    text-align: center;
+}
+
+/* クローゼット本体 */
+#closet {
+    position: relative;
+    padding: 20px;
+}
+
+.door {
+    width: 50%;
+    height: 300px;
+    background: linear-gradient(#111, #222);
+    position: absolute;
+    top: 0;
+    transition: transform 1s;
+    z-index: 10;
+}
+
+.door.left {
+    left: 0;
+    transform-origin: left;
+}
+
+.door.right {
+    right: 0;
+    transform-origin: right;
+}
+
+/* 開いたアニメ */
+.open .left {
+    transform: rotateY(-90deg);
+}
+.open .right {
+    transform: rotateY(90deg);
+}
+
+.title {
+    margin-top: 320px;
+    font-size: 28px;
+    color: #ff99ff; /* ピンク寄りの紫 */
+}
+
+/* ボタン */
+button {
+    padding: 10px 20px;
+    background: #ff44aa;
+    border: none;
+    color: white;
+    margin-top: 15px;
+    border-radius: 8px;
+}
+
+#items img {
+    width: 100px;
+    margin: 10px;
+    border: 2px solid #aa55ff;
+    border-radius: 6px;
+}
+
+/* フォーム */
+#addForm {
+    background: #111;
+    padding: 20px;
+}
+
+.hidden {
+    display: none;
+}
+
+label {
+    display: block;
+    margin-top: 10px;
+}
