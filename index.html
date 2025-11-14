@@ -1,173 +1,244 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-<meta charset="UTF-8">
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
 <title>My Closet App</title>
 
 <style>
-/* ====== 全体デザイン（黒×ピンク×紫） ====== */
-body {
-    font-family: Arial;
-    background: linear-gradient(135deg, #120018, #000);
-    color: #ffd8ff;
-    padding: 20px;
+/* ===== 全体テーマ（黒 × ピンク × 紫） ===== */
+:root{
+  --bg1:#090007;
+  --bg2:#120018;
+  --accent-pink:#ff6ad5;
+  --accent-purple:#d57bff;
+  --muted:#bda3d9;
+  --card:#151216;
 }
 
-/* 見出し */
-h1, h2, h3 {
-    text-align: center;
-    color: #ffbdf8;
+*{box-sizing:border-box}
+body{
+  margin:0;
+  font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial;
+  background: linear-gradient(135deg,var(--bg1),var(--bg2));
+  color: #ffe8ff;
+  -webkit-font-smoothing:antialiased;
+  padding:18px;
 }
 
-/* ====== 服追加フォーム ====== */
-form, .input-box {
-    margin-bottom: 20px;
+/* header */
+header{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+h1{margin:0;font-size:20px;color:var(--accent-pink);text-shadow:0 4px 18px rgba(0,0,0,.6)}
+
+/* layout */
+.container{max-width:760px;margin:0 auto;}
+.col{display:flex;gap:18px;flex-wrap:wrap}
+
+/* form */
+.form-card{
+  background:linear-gradient(180deg,#0b0810,#0f0a15);
+  border-radius:12px;padding:12px;border:1px solid rgba(255,105,200,0.06);
+  width:100%;
+}
+.row{display:flex;gap:12px}
+.input{flex:1}
+label{font-size:13px;color:var(--muted);display:block;margin-bottom:6px}
+select,input[type=file],input[type=text]{width:100%;padding:10px;border-radius:10px;border:1px solid #2a2133;background:#0c0a0e;color:var(--muted)}
+.btn{
+  background:linear-gradient(90deg,var(--accent-purple),var(--accent-pink));
+  color:#0a0610;border:none;padding:10px 14px;border-radius:10px;font-weight:700;cursor:pointer;
 }
 
-select, input {
-    width: 100%;
-    padding: 10px;
-    background: #1d1d1d;
-    color: #ffbdf8;
-    border: 1px solid #ff6ad5;
-    border-radius: 10px;
-    margin-top: 10px;
+/* closet (glass doors) */
+.closet-wrap{margin:20px auto;max-width:720px}
+#closet{
+  position:relative;
+  height:240px;
+  border-radius:14px;
+  overflow:hidden;
+  background:linear-gradient(180deg,rgba(255,255,255,0.03),rgba(0,0,0,0));
+  border:1px solid rgba(255,255,255,0.04);
+  box-shadow: 0 12px 40px rgba(6,0,12,0.6);
 }
 
-button {
-    width: 100%;
-    margin-top: 10px;
-    padding: 12px;
-    border-radius: 12px;
-    border: none;
-    cursor: pointer;
-    font-weight: bold;
-    background: linear-gradient(135deg, #d57bff, #ff6ad5);
-    color: white;
+/* interior (appears when doors open) */
+.closet-interior{
+  position:absolute;inset:0;padding:18px;display:flex;flex-direction:column;gap:12px;align-items:center;
+  justify-content:flex-start;opacity:0;transform:translateY(6px);transition:opacity .6s ease, transform .6s ease;
 }
 
-/* ====== 登録した服一覧 ====== */
-.item {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    background: #1b1b1b;
-    padding: 10px;
-    border-radius: 12px;
-    margin-bottom: 10px;
-    border: 1px solid #333;
-}
-.item img {
-    width: 80px;
-    height: 80px;
-    object-fit: cover;
-    border-radius: 8px;
-}
-.delete-btn {
-    background: #ff6ad5;
-    border: none;
-    padding: 8px;
-    border-radius: 8px;
-    cursor: pointer;
-    color: #fff;
-    font-weight: bold;
+/* when open, interior becomes visible */
+#closet.open .closet-interior{opacity:1;transform:translateY(0);}
+
+/* glass doors (semi-transparent glass look) */
+.door{
+  position:absolute;top:0;height:100%;width:50%;
+  background:linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01));
+  border-radius:0;
+  backdrop-filter: blur(6px) saturate(140%);
+  -webkit-backdrop-filter: blur(6px) saturate(140%);
+  border:1px solid rgba(255,255,255,0.06);
+  transition:transform .9s cubic-bezier(.2,.9,.2,1), box-shadow .6s;
+  z-index:6;
+  box-shadow: inset 0 -40px 60px rgba(0,0,0,0.5);
 }
 
-/* ====== コーデ表示 ====== */
-#coordinate-area {
-    width: 90%;
-    margin: auto;
-    padding: 20px;
-    text-align: center;
-    border-radius: 15px;
-    background: #1a1a1a;
-    margin-bottom: 30px;
-    border: 1px solid #444;
+/* decorative tint for doors */
+#door-left{
+  left:0;
+  background: linear-gradient(180deg, rgba(200,140,255,0.04), rgba(80,30,80,0.02));
+  transform-origin:left center;
 }
-#coordinate-area img {
-    width: 160px;
-    border-radius: 10px;
-    margin: 5px;
+#door-right{
+  right:0;
+  background: linear-gradient(180deg, rgba(255,90,170,0.04), rgba(80,30,80,0.02));
+  transform-origin:right center;
 }
 
-/* ====== 円形スライドクローゼット ====== */
-.carousel {
-    display: flex;
-    overflow-x: scroll;
-    scroll-snap-type: x mandatory;
-    gap: 20px;
-    padding: 15px;
-    border-radius: 14px;
-    background: #121212;
-    border: 1px solid #444;
-    white-space: nowrap;
-    margin-bottom: 30px;
+/* door open transforms (slide outward) */
+#closet.open #door-left{ transform: translateX(-105%); }
+#closet.open #door-right{ transform: translateX(105%); }
+
+/* door handles */
+.door-handle{
+  position:absolute;top:50%;transform:translateY(-50%);width:8px;height:44px;border-radius:6px;background:linear-gradient(90deg,var(--accent-pink),var(--accent-purple));opacity:0.95;
+  box-shadow:0 6px 18px rgba(213,123,255,0.18);
+  z-index:10;
 }
-.carousel::-webkit-scrollbar {
-    display: none;
-}
-.carousel img {
-    width: 120px;
-    height: 120px;
-    object-fit: cover;
-    scroll-snap-align: center;
-    border-radius: 12px;
-    border: 2px solid #ff87e8;
-    cursor: pointer;
+.door-handle.left{left:44%}
+.door-handle.right{right:44%}
+
+/* closet rail + hanging area */
+.rail{
+  width:100%;height:8px;border-radius:6px;background:linear-gradient(90deg,rgba(255,255,255,0.06),rgba(255,255,255,0.02));
+  margin-bottom:8px;align-self:stretch;
 }
 
+/* carousel style (circular-feel by styling) */
+.carousel{
+  width:100%;
+  display:flex;
+  gap:12px;
+  overflow:auto;
+  padding:8px 6px;
+  scroll-snap-type:x mandatory;
+}
+.carousel::-webkit-scrollbar{display:none}
+.carousel-item{
+  flex:0 0 auto;
+  width:104px;height:140px;border-radius:12px;background:#0e0b10;border:1px solid rgba(255,255,255,0.03);padding:8px;
+  display:flex;flex-direction:column;align-items:center;gap:8px;scroll-snap-align:center;cursor:pointer;
+  transition:transform .18s ease, box-shadow .18s;
+}
+.carousel-item img{width:88px;height:100px;object-fit:cover;border-radius:8px;border:2px solid rgba(200,140,255,0.12);}
+
+.carousel-item:hover{transform:translateY(-6px);box-shadow:0 10px 30px rgba(160,80,200,0.15)}
+
+/* selected display */
+.selected-area{display:flex;gap:12px;align-items:center;justify-content:center;margin-top:6px}
+.selected-area img{width:150px;height:150px;object-fit:cover;border-radius:12px;border:3px solid rgba(255,255,255,0.04);}
+
+/* list area */
+#list{margin-top:12px;display:flex;flex-direction:column;gap:8px}
+
+/* small responsive */
+@media (min-width:880px){
+  .container{max-width:880px}
+  .carousel-item{width:120px;height:160px}
+  .carousel-item img{width:104px;height:120px}
+  .selected-area img{width:180px;height:180px}
+}
 </style>
 </head>
-
 <body>
-<h1>My Closet</h1>
+<div class="container">
+  <header>
+    <h1>My Closet</h1>
+    <div style="font-size:13px;color:var(--muted)">黒 × ピンク × 紫 テーマ</div>
+  </header>
 
-<!-- ===============================
-   洋服追加エリア
-================================ -->
-<h2>洋服を追加</h2>
+  <!-- フォーム -->
+  <section class="form-card">
+    <div style="display:flex;gap:12px;flex-wrap:wrap">
+      <div style="flex:1;min-width:160px">
+        <label>写真</label>
+        <input type="file" id="imageInput" accept="image/*" />
+      </div>
 
-<input type="file" id="imageInput">
+      <div style="flex:1;min-width:140px">
+        <label>カテゴリ</label>
+        <select id="category">
+          <option>仕事</option>
+          <option>遊び</option>
+          <option>バレー</option>
+          <option>夜職</option>
+        </select>
+      </div>
 
-<select id="category">
-    <option>仕事</option>
-    <option>遊び</option>
-    <option>バレー</option>
-    <option>夜職</option>
-</select>
+      <div style="flex:1;min-width:140px">
+        <label>季節</label>
+        <select id="season">
+          <option>夏服</option>
+          <option>冬服</option>
+        </select>
+      </div>
 
-<select id="season">
-    <option>夏服</option>
-    <option>冬服</option>
-</select>
+      <div style="flex:1;min-width:140px">
+        <label>素材</label>
+        <select id="material">
+          <option>レース</option>
+          <option>ベロア</option>
+          <option>コットン</option>
+          <option>その他</option>
+        </select>
+      </div>
 
-<select id="material">
-    <option>レース</option>
-    <option>ベロア</option>
-    <option>コットン</option>
-    <option>その他</option>
-</select>
+      <div style="flex:1;min-width:120px;align-self:flex-end">
+        <button id="addBtn" class="btn">追加する</button>
+      </div>
+    </div>
+  </section>
 
-<button onclick="addItem()">追加する</button>
+  <!-- クローゼット -->
+  <div class="closet-wrap">
+    <div id="closet">
+      <div class="closet-interior">
+        <div class="rail"></div>
 
-<div id="list"></div>
+        <!-- Selected / coordinate area (center) -->
+        <div id="coordinate-area">
+          <div id="selected-top">トップスを選んでください</div>
+          <div id="selected-bottom">ボトムスを選んでください</div>
+        </div>
 
+        <!-- circular carousels -->
+        <div style="width:100%;display:flex;gap:12px;flex-direction:column;align-items:stretch">
+          <div>
+            <h3 style="margin:6px 0;color:var(--accent-pink);text-align:left">トップス</h3>
+            <div id="top-carousel" class="carousel" aria-label="tops"></div>
+          </div>
 
-<!-- ===============================
-   コーディネートエリア
-================================ -->
-<h2>コーデを作る</h2>
+          <div>
+            <h3 style="margin:6px 0;color:var(--accent-purple);text-align:left">ボトムス</h3>
+            <div id="bottom-carousel" class="carousel" aria-label="bottoms"></div>
+          </div>
+        </div>
 
-<div id="coordinate-area">
-    <div id="selected-top">トップスを選んでね</div>
-    <div id="selected-bottom">ボトムスを選んでね</div>
+        <!-- list (hidden inside closet bottom) -->
+        <div id="list" style="width:100%"></div>
+      </div>
+
+      <!-- semi-transparent glass doors -->
+      <div id="door-left" class="door"></div>
+      <div id="door-right" class="door"></div>
+
+      <!-- handles -->
+      <div class="door-handle left" aria-hidden="true"></div>
+      <div class="door-handle right" aria-hidden="true"></div>
+    </div>
+  </div>
+
 </div>
-
-<h3>トップスを選ぶ</h3>
-<div id="top-carousel" class="carousel"></div>
-
-<h3>ボトムスを選ぶ</h3>
-<div id="bottom-carousel" class="carousel"></div>
 
 <script src="script.js"></script>
 </body>
