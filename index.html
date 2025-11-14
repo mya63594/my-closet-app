@@ -1,54 +1,60 @@
 <!DOCTYPE html>
-<html lang="ja">
+<html>
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Closet App</title>
-    <link rel="stylesheet" href="style.css">
-
-    <!-- PWA 対応 -->
-    <link rel="manifest" href="manifest.json">
+    <title>Closet App</title>
+    <style>
+        body { font-family: Arial; padding: 20px; }
+        .item { 
+            display: flex; 
+            align-items: center; 
+            gap: 10px; 
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            padding: 10px;
+            border-radius: 8px;
+        }
+        img { width: 80px; height: 80px; object-fit: cover; border-radius: 6px; }
+        .delete-btn {
+            background: #ff4d4d;
+            color: white;
+            border: none;
+            padding: 8px 10px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .delete-btn:hover { opacity: 0.8; }
+    </style>
 </head>
 <body>
 
-    <div id="closet">
-        <div class="door left"></div>
-        <div class="door right"></div>
-        <h1 class="title">My Closet</h1>
+<h2>洋服を追加</h2>
 
-        <button id="addButton">＋ 服を追加</button>
+<input type="file" id="imageInput" accept="image/*"><br><br>
 
-        <div id="items"></div>
-    </div>
+<select id="category">
+    <option>仕事</option>
+    <option>遊び</option>
+    <option>バレー</option>
+    <option>夜職</option>
+</select>
 
-    <!-- 追加フォーム -->
-    <div id="addForm" class="hidden">
-        <h2>服を登録</h2>
+<select id="season">
+    <option>夏</option>
+    <option>冬</option>
+</select>
 
-        <label>カテゴリー</label>
-        <select id="scene">
-            <option>仕事</option>
-            <option>遊び</option>
-            <option>バレー</option>
-            <option>夜職</option>
-        </select>
+<select id="material">
+    <option>レース</option>
+    <option>ベロア</option>
+    <option>コットン</option>
+</select>
 
-        <label>季節</label>
-        <select id="season">
-            <option>夏</option>
-            <option>冬</option>
-        </select>
+<button onclick="addItem()">追加</button>
 
-        <label>素材</label>
-        <input id="material" placeholder="レース / ベロア など">
+<h2>クローゼット</h2>
+<div id="list"></div>
 
-        <label>写真</label>
-        <input type="file" id="photo" accept="image/*" capture="environment">
-
-        <button id="saveButton">保存</button>
-        <button id="cancelButton">キャンセル</button>
-    </div>
-
-    <script src="script.js"></script>
+<script src="script.js"></script>
 </body>
 </html>
