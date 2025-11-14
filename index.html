@@ -5,25 +5,40 @@
     <title>Closet App</title>
     <style>
         body { font-family: Arial; padding: 20px; }
+
         .item { 
             display: flex; 
             align-items: center; 
-            gap: 10px; 
+            gap: 15px; 
             margin-bottom: 15px;
             border: 1px solid #ccc;
             padding: 10px;
-            border-radius: 8px;
+            border-radius: 10px;
         }
-        img { width: 80px; height: 80px; object-fit: cover; border-radius: 6px; }
+
+        img { 
+            width: 80px; 
+            height: 80px; 
+            object-fit: cover; 
+            border-radius: 8px; 
+        }
+
+        /* 💜光るグラデ削除ボタン */
         .delete-btn {
-            background: #ff4d4d;
+            background: linear-gradient(135deg, #d57bff, #ff6ad5);
             color: white;
             border: none;
-            padding: 8px 10px;
-            border-radius: 5px;
+            padding: 10px 14px;
+            border-radius: 12px;
+            font-size: 18px;
+            font-weight: bold;
             cursor: pointer;
+            box-shadow: 0 0 10px #ff6ad5;
         }
-        .delete-btn:hover { opacity: 0.8; }
+
+        .delete-btn:hover {
+            opacity: 0.85;
+        }
     </style>
 </head>
 <body>
