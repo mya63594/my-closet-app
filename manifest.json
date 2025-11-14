@@ -1,10 +1,10 @@
 {
-  "name": "My Closet App",
+  "name": "My Closet",
   "short_name": "Closet",
-  "start_url": "index.html",
+  "start_url": "./index.html",
   "display": "standalone",
   "background_color": "#000000",
-  "theme_color": "#ff44aa",
+  "theme_color": "#ff6ad5",
   "icons": [
     {
       "src": "icon-192.png",
