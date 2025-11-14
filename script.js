@@ -1,171 +1,197 @@
-/* ===================================================
-   完全版スクリプト
-   - 起動時に一度だけ扉を開く (B1)
-   - 服の追加、削除、localStorage 保存
-   - トップス・ボトムスの分離、円形スライダー更新
-   - タップで選んでコーデ表示
-   =================================================== */
+//----------------------------------------------------
+// 収納データ
+//----------------------------------------------------
+let items = JSON.parse(localStorage.getItem("closetItems") || "[]");
 
-const STORAGE_KEY = "my_closet_items_v3";
-
-/* データモデル（簡易） */
-let items = []; // {id, image, category, season, material, kind}  kind: "top"|"bottom"
-
-/* DOM */
-const closet = document.getElementById("closet");
-const addBtn = document.getElementById("addBtn");
+//----------------------------------------------------
+// 要素取得
+//----------------------------------------------------
 const imageInput = document.getElementById("imageInput");
-const categoryEl = document.getElementById("category");
-const seasonEl = document.getElementById("season");
-const materialEl = document.getElementById("material");
-const listEl = document.getElementById("list");
-const topCarousel = document.getElementById("top-carousel");
-const bottomCarousel = document.getElementById("bottom-carousel");
-const selectedTopEl = document.getElementById("selected-top");
-const selectedBottomEl = document.getElementById("selected-bottom");
+const category = document.getElementById("category");
+const season = document.getElementById("season");
+const material = document.getElementById("material");
+const kind = document.getElementById("kind");
 
-/* 起動時ロード */
+const addBtn = document.getElementById("addBtn");
+
+const topRing = document.getElementById("top-ring");
+const bottomRing = document.getElementById("bottom-ring");
+
+const listEl = document.getElementById("list");
+const closet = document.getElementById("closet");
+
+const selectedTop = document.getElementById("selected-top");
+const selectedBottom = document.getElementById("selected-bottom");
+
+// 現在選ばれているコーデ
+let selectedTopItem = null;
+let selectedBottomItem = null;
+
+//----------------------------------------------------
+// 扉開閉（ロード時に開く演出）
+//----------------------------------------------------
 window.addEventListener("load", () => {
-  loadItems();
-  // 扉を「起動時に一度だけ」開く演出
   setTimeout(() => {
     closet.classList.add("open");
-  }, 360); // 少しの遅延で雰囲気を出す
+  }, 300);
 });
 
-/* 追加ボタン */
-addBtn.addEventListener("click", handleAdd);
-
-/* 追加処理 */
-function handleAdd() {
-  if (!imageInput.files || !imageInput.files[0]) {
-    alert("写真を選んでください！");
+//----------------------------------------------------
+// アイテム追加
+//----------------------------------------------------
+addBtn.addEventListener("click", () => {
+  const file = imageInput.files[0];
+  if (!file) {
+    alert("写真を選んでね！");
     return;
   }
 
-  const file = imageInput.files[0];
   const reader = new FileReader();
-  reader.onload = (ev) => {
-    const dataUrl = ev.target.result;
-    const id = generateId();
-    const category = categoryEl.value;
-    const season = seasonEl.value;
-    const material = materialEl.value;
+  reader.onload = () => {
+    let itemKind = kind.value;
 
-    // ユーザー操作でトップ/ボトムを分けたい場合はここで分けられるようにする。
-    // 今は「仕事/遊び をトップス、それ以外をボトムス」にしているが、
-    // 必要なら UI に kind 選択を追加できます。
-    const kind = (category === "仕事" || category === "遊び") ? "top" : "bottom";
+    // 種類 自動判定
+    if (itemKind === "infer") {
+      itemKind =
+        category.value === "仕事" || category.value === "遊び"
+          ? "top"
+          : "bottom";
+    }
 
-    const item = { id, image: dataUrl, category, season, material, kind, createdAt: Date.now() };
-    items.unshift(item);
-    saveItems();
+    const newItem = {
+      id: Date.now(),
+      img: reader.result,
+      category: category.value,
+      season: season.value,
+      material: material.value,
+      kind: itemKind,
+    };
+
+    items.push(newItem);
+    localStorage.setItem("closetItems", JSON.stringify(items));
+
     renderAll();
-    // フォームリセット（画像のみ）
     imageInput.value = "";
   };
+
   reader.readAsDataURL(file);
-}
+});
 
-/* 生成ID */
-function generateId() {
-  return "i_" + Math.random().toString(36).slice(2, 9);
-}
-
-/* 保存・読み込み */
-function saveItems() {
-  try {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(items));
-  } catch (e) {
-    console.warn("Storage error", e);
-  }
-}
-function loadItems() {
-  try {
-    const raw = localStorage.getItem(STORAGE_KEY);
-    if (raw) items = JSON.parse(raw);
-    else items = [];
-  } catch (e) {
-    items = [];
-  }
-  renderAll();
-}
-
-/* 描画まとめ */
+//----------------------------------------------------
+// レンダリング
+//----------------------------------------------------
 function renderAll() {
+  renderRing(topRing, items.filter((i) => i.kind === "top"));
+  renderRing(bottomRing, items.filter((i) => i.kind === "bottom"));
   renderList();
-  renderCarousel("top");
-  renderCarousel("bottom");
 }
 
-/* 一覧表示（inside closet) */
+//----------------------------------------------------
+// リング表示
+//----------------------------------------------------
+function renderRing(ringEl, data) {
+  ringEl.innerHTML = "";
+  const total = data.length;
+
+  data.forEach((item, idx) => {
+    const angle = (360 / total) * idx;
+
+    const itemEl = document.createElement("div");
+    itemEl.className = "ring-item";
+    itemEl.style.transform = `translate(-50%, -50%) rotate(${angle}deg) translate(0, -160px)`;
+
+    itemEl.innerHTML = `
+      <img src="${item.img}">
+      <div class="cap">${item.category}</div>
+    `;
+
+    // クリックで選択
+    itemEl.addEventListener("click", () => {
+      if (item.kind === "top") {
+        selectedTopItem = item;
+        selectedTop.innerHTML = `<img src="${item.img}">`;
+      } else {
+        selectedBottomItem = item;
+        selectedBottom.innerHTML = `<img src="${item.img}">`;
+      }
+    });
+
+    ringEl.appendChild(itemEl);
+  });
+}
+
+//----------------------------------------------------
+// 管理リスト
+//----------------------------------------------------
 function renderList() {
   listEl.innerHTML = "";
-  items.forEach((it) => {
+
+  items.forEach((item) => {
     const row = document.createElement("div");
-    row.className = "item";
-    row.dataset.id = it.id;
+    row.style = `
+      display:flex;
+      gap:10px;
+      align-items:center;
+      background:#0f0c12;
+      padding:8px;
+      border-radius:8px;
+      border:1px solid rgba(255,255,255,0.04);
+    `;
 
     row.innerHTML = `
-      <div style="display:flex;align-items:center;gap:12px">
-        <img src="${it.image}" alt="">
-        <div style="min-width:120px">
-          <div style="font-weight:700;color:#ffd8ff">${it.category}</div>
-          <div style="font-size:13px;color:var(--muted)">${it.season} / ${it.material}</div>
-        </div>
+      <img src="${item.img}" style="width:40px;height:40px;border-radius:6px;object-fit:cover;">
+      <div style="flex:1;font-size:13px;color:#cfaeff">
+        ${item.category} / ${item.season} / ${item.material} / ${item.kind}
       </div>
-      <div style="display:flex;gap:8px;align-items:center">
-        <button class="delete-btn" title="削除">🗑️</button>
-      </div>
+      <button data-id="${item.id}" style="
+        background:#ff6ad5;border:none;border-radius:6px;color:#000;padding:6px 10px;cursor:pointer;
+      ">削除</button>
     `;
 
     // 削除
-    row.querySelector(".delete-btn").addEventListener("click", () => {
-      if (!confirm("この服を削除しますか？")) return;
-      items = items.filter(x => x.id !== it.id);
-      saveItems();
+    row.querySelector("button").onclick = () => {
+      items = items.filter((x) => x.id !== item.id);
+      localStorage.setItem("closetItems", JSON.stringify(items));
       renderAll();
-    });
+    };
 
     listEl.appendChild(row);
   });
 }
 
-/* カルーセル描画(top or bottom) */
-function renderCarousel(type) {
-  const target = type === "top" ? topCarousel : bottomCarousel;
-  target.innerHTML = "";
-  // collect items of that kind
-  const data = items.filter(x => x.kind === (type === "top" ? "top" : "bottom"));
-  data.forEach((it) => {
-    const cell = document.createElement("div");
-    cell.className = "carousel-item";
-    cell.innerHTML = `<img src="${it.image}" alt=""><div style="font-size:12px;color:var(--muted);margin-top:6px">${it.category}</div>`;
+//----------------------------------------------------
+// リングのスワイプ（ドラッグ回転）
+//----------------------------------------------------
+function enableRingDrag(ringEl) {
+  let isDragging = false;
+  let startY = 0;
+  let rotation = parseFloat(ringEl.dataset.rotation || "0");
 
-    cell.addEventListener("click", () => {
-      selectClothes(type, it.id);
-    });
+  ringEl.addEventListener("mousedown", (e) => {
+    isDragging = true;
+    startY = e.clientY;
+  });
 
-    target.appendChild(cell);
+  document.addEventListener("mouseup", () => {
+    isDragging = false;
+  });
+
+  document.addEventListener("mousemove", (e) => {
+    if (!isDragging) return;
+
+    let delta = e.clientY - startY;
+    startY = e.clientY;
+
+    rotation += delta * 0.4;
+    ringEl.style.transform = `translate(-50%, -50%) rotate(${rotation}deg)`;
+    ringEl.dataset.rotation = rotation;
   });
 }
 
-/* 服を選択してコーデ領域に反映 */
-function selectClothes(type, id) {
-  const it = items.find(x => x.id === id);
-  if (!it) return;
-  if (type === "top") {
-    selectedTopEl.innerHTML = `<img src="${it.image}" alt=""><div style="font-size:13px;color:var(--muted);margin-top:6px">${it.category}</div>`;
-  } else {
-    selectedBottomEl.innerHTML = `<img src="${it.image}" alt=""><div style="font-size:13px;color:var(--muted);margin-top:6px">${it.category}</div>`;
-  }
-}
+enableRingDrag(topRing);
+enableRingDrag(bottomRing);
 
-/* ユーティリティ：アイテムが空ならヒントを表示（初回時） */
-(function showInitialHints(){
-  if (!localStorage.getItem(STORAGE_KEY)) {
-    // 初回は中のテキストをやわらかく表示（すでにCSSで見える）
-    selectedTopEl.innerText = "トップスを追加してみよう";
-    selectedBottomEl.innerText = "ボトムスを追加してみよう";
-  }
-})();
+//----------------------------------------------------
+// 初期描画
+//----------------------------------------------------
+renderAll();
