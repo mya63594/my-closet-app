@@ -1,3 +1,10 @@
+// ===== クローゼット開閉アニメ =====
+document.getElementById("closet").addEventListener("click", () => {
+    document.getElementById("closet").classList.toggle("open");
+});
+
+
+// ===== 洋服を追加 =====
 function addItem() {
     const imageInput = document.getElementById("imageInput");
     const category = document.getElementById("category").value;
@@ -23,7 +30,7 @@ function addItem() {
             <button class="delete-btn">🗑️</button>
         `;
 
-        // 💜削除ボタン → アイテムを消す
+        // ===== 削除ボタン =====
         item.querySelector(".delete-btn").addEventListener("click", () => {
             item.remove();
         });
